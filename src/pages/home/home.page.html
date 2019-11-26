@@ -1,0 +1,50 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>Bienvenido</ion-title>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+            <ion-button>
+                <ion-icon name="cog"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                <ion-button expand="full" (click)="simpleNotif()">Generate</ion-button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+
+    <ion-grid>
+        <ion-row>
+            <ion-col size="12">
+                <ion-item>
+                    <ion-label position="floating">Seleccione fecha </ion-label>
+                    <ion-input readonly [(ngModel)]="mydate" (ionChange)="onChangeDate()" [liIonic4Datepicker]="datePickerObj"></ion-input>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <div class="ion-padding">
+        <ion-card color="medium-shade">
+            <ion-card-header>
+                <ion-item>
+                    <ion-card-title>Test Quick</ion-card-title>
+
+                    <ion-button fill="outline" slot="end" (click)="goFunction()">Funciones</ion-button>
+                </ion-item>
+            </ion-card-header>
+
+            <ion-card-content>
+                Test Quick es una aplicación que permite comprobar la solución de tus funciones químicas.
+            </ion-card-content>
+        </ion-card>
+    </div>
+</ion-content>

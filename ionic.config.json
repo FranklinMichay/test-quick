@@ -1,5 +1,7 @@
 {
   "name": "test-quick",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

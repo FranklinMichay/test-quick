@@ -1,0 +1,70 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title class="ion-text-center">No Metales</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-list>
+        <ion-list-header>Seleccione un compuesto por familia</ion-list-header>
+
+        <ion-item>
+            <ion-label>Familia</ion-label>
+            <ion-select placeholder="Seleccionar uno" [(ngModel)]="param" (ngModelChange)="getInfoSelect($event)">
+                <ion-select-option *ngFor="let family of families" [value]="family.name">{{family.name}}
+                </ion-select-option>
+            </ion-select>
+        </ion-item>
+        <ion-item>
+            <ion-label>Compuesto</ion-label>
+            <ion-select placeholder="Seleccionar uno" [(ngModel)]="compuesto" (ngModelChange)="getInfoSelectElement($event)">
+                <ion-select-option *ngFor="let element of elements" [value]="element.name">{{element.name}}
+                </ion-select-option>
+            </ion-select>
+        </ion-item>
+
+        <ion-item>
+            <ion-label>Valencia</ion-label>
+            <ion-select placeholder="Seleccionar uno" [(ngModel)]="valorValencia" (ngModelChange)="getInfoSelectValencia($event)">
+                <ion-select-option *ngFor="let valencia of valencias" [value]="valencia.valencia">{{valencia.valencia}}
+                </ion-select-option>
+            </ion-select>
+        </ion-item>
+        <ion-button *ngIf="param && compuesto && valorValencia" fill="outline" class="style-button" (click)="calcular()">Calcular</ion-button>
+
+        <ion-button *ngIf="result" fill="outline" class="result">{{result.name}}</ion-button>
+
+        <ion-card color="medium-shade">
+            <ion-card-header>
+
+                <ion-card-title>Solución:</ion-card-title>
+
+            </ion-card-header>
+
+            <ion-card-content *ngIf="result">
+
+
+                <div class="eq-c">
+
+                    <span class="sy-r">{{result.elemento}}<span class="oxbr">{{result.valencia}}</span></span>
+                    +
+                    <span class="sy-g">O<span class="oxbr">-2</span></span>
+                    =
+                    <span class="sy-b">{{result.elemento}}<sub>2</sub></span>
+                    <span class="sy-b">0<sub>{{result.valencia}}</sub></span>
+                    <br> =>
+                    <span class="sy-b">{{result.elemento}}<sub>2</sub></span>
+                    <span class="sy-b">0<sub>{{result.valencia}}</sub></span>
+                    <span *ngIf="result">= solucion</span>
+
+                </div>
+            </ion-card-content>
+        </ion-card>
+    </ion-list>
+
+
+
+</ion-content>
