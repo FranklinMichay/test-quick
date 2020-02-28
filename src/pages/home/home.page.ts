@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { ModalController, AlertController } from '@ionic/angular';
-import * as moment_ from 'moment';
-import { Ionic4DatepickerModalComponent } from '@logisticinfotech/ionic4-datepicker';
+import { Component } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { ModalController, AlertController, Platform } from "@ionic/angular";
+import * as moment_ from "moment";
+import { Ionic4DatepickerModalComponent } from "@logisticinfotech/ionic4-datepicker";
 const moment = moment_;
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { LocalNotifications } from "@ionic-native/local-notifications/ngx";
+import { Push, PushObject, PushOptions } from "@ionic-native/push/ngx";
 
 export class MyTemplateDriverForm {
   public name: string;
@@ -13,53 +14,66 @@ export class MyTemplateDriverForm {
 }
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: "app-home",
+  templateUrl: "home.page.html",
+  styleUrls: ["home.page.scss"]
 })
-
-
 export class HomePage {
-
-  mydate = '11-12-2018';
+  mydate = "11-12-2018";
 
   datePickerObj: any = {};
   datePickerObjPtBr: any = {};
-  mydatePtBr = '06 Fev 2019';
+  mydatePtBr = "06 Fev 2019";
 
   isDisableDatePicker: false;
   monthsList = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
   ];
-  weeksList = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+  weeksList = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
   selectedDate;
   clickSub: any;
+  pickupLocation: string;
+
+  location: any;
 
   constructor(
     private router: Router,
     public modalCtrl: ModalController,
     private localNotifications: LocalNotifications,
-    public alertController: AlertController
+    public alertController: AlertController,
+    public platform: Platform,
+    private push: Push,
+    private route: ActivatedRoute
   ) {
 
+    
+
+    this.route.queryParams.subscribe(params => {
+      console.log(params, 'params');
+      
+      if (this.router.getCurrentNavigation().extras.state) {
+        this.pickupLocation = this.router.getCurrentNavigation().extras.state.pickupLocation;
+      }
+    });
+    console.log(this.location, "pickup");
   }
 
   async presentAlert(data) {
     const alert = await this.alertController.create({
-      header: 'Alert',
+      header: "Alert",
       message: data,
-      buttons: ['OK']
+      buttons: ["OK"]
     });
 
     await alert.present();
@@ -68,133 +82,106 @@ export class HomePage {
   unsub() {
     this.clickSub.unsubscribe();
   }
+
   simpleNotif() {
-    this.clickSub = this.localNotifications.on('click').subscribe(data => {
+    this.clickSub = this.localNotifications.on("click").subscribe(data => {
       console.log(data);
-      this.presentAlert('Your notifiations contains a secret = ' + data.data.secret);
+      this.presentAlert(
+        "Your notifiations contains a secret = " + data.data.secret
+      );
       this.unsub();
     });
+
     this.localNotifications.schedule({
       id: 1,
-      text: 'Single Local Notification',
-      data: { secret: 'secret' }
+      text: "Nueva Notificación",
+      sound: this.setSound(),
+      icon: "file://assets/icon/favicon.png",
+      data: { secret: "secret" }
     });
-
   }
-  
+
+  //var sound = device.platform != 'iOS' ? 'file://audio/adhan.mp3' : 'content://audio/adhan.mp3';
+
+  setSound() {
+    if (this.platform.is("android")) {
+      return "file://assets/sound/sound.mp3";
+    } else {
+      return "file://assets/sound/sorted.m4r";
+    }
+  }
 
   ngOnInit() {
-    const disabledDates: Date[] = [
-      new Date(1545911005644),
-      new Date(),
-      new Date(2018, 12, 12), // Months are 0-based, this is August, 10th.
-      new Date('Wednesday, December 26, 2018'), // Works with any valid Date formats like long format
-      new Date('12-14-2018') // Short format
-    ];
-
-    // EXAMPLE OBJECT
-    this.datePickerObj = {
-      // inputDate: new Date('12'), // If you want to set month in date-picker
-      // inputDate: new Date('2018'), // If you want to set year in date-picker
-      // inputDate: new Date('2018-12'), // If you want to set year & month in date-picker
-      // inputDate: new Date('2018-12-01'), // If you want to set date in date-picker
-
-      // inputDate: this.mydate,
-      // dateFormat: 'yyyy-MM-DD',
-      dateFormat: 'DD-MM-YYYY',
-      fromDate: new Date('1500-01-01'), // default null
-      // toDate: new Date('2018-12-28'), // default null
-      // showTodayButton: true, // default true
-      // closeOnSelect: false, // default false
-      // disableWeekDays: [4], // default []
-      // mondayFirst: false, // default false
-      // setLabel: 'S',  // default 'Set'
-      // todayLabel: 'T', // default 'Today'
-      // closeLabel: 'C', // default 'Close'
-      // disabledDates: disabledDates, // default []
-      titleLabel: 'Select a Date', // default null
-      // monthsList: this.monthsList,
-      // weeksList: this.weeksList,
-      // momentLocale: 'pt-BR',
-      yearInAscending: true
-    };
-
-    this.datePickerObjPtBr = {
-      dateFormat: 'DD MMM YYYY',
-      closeOnSelect: true,
-      setLabel: 'OK',
-      todayLabel: 'Hoje',
-      closeLabel: 'Fechar',
-      titleLabel: 'Selecione uma data',
-      monthsList: [
-        'Enero',
-        'Febrero',
-        'Marzo',
-        'Abril',
-        'Mayo',
-        'Junio',
-        'Julio',
-        'Agosto',
-        'Septiembre',
-        'Octubre',
-        'Noviembre',
-        'Diciembre'
-      ],
-      weeksList: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
-      clearButton: false
-      // momentLocale: 'pt-BR'
-    };
+    this.location = this.router.getCurrentNavigation().extras.state;
+    console.log(this.location, "pickup");
   }
 
   goFunction() {
-    this.router.navigate(['test-function']);
+    this.router.navigate(["test-function"]);
   }
 
-  onChangeDate() {
-    console.log('onChangeDate date ', this.mydate);
-  }
+  pushNotification() {
+    // to check if we have permission
+    this.push.hasPermission().then((res: any) => {
+      if (res.isEnabled) {
+        console.log("We have permission to send push notifications");
+      } else {
+        console.log("We do not have permission to send push notifications");
+      }
+    });
 
-  onClickSubmit() {
-    // console.log('onClickSubmit', this.dataForm.value);
-  }
+    // Create a channel (Android O and above). You'll need to provide the id, description and importance properties.
+    this.push
+      .createChannel({
+        id: "testchannel1",
+        description: "My first test channel",
+        // The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.
+        importance: 3
+      })
+      .then(() => console.log("Channel created"));
 
-  async openDatePicker() {
-    const datePickerObj = {
-      inputdate: moment(new Date('2019-02')),
-      closeOnSelect: true,
-      titleLabel: 'Datum',
-      closeLabel: 'Schließen',
-      monthsList: [
-        'Enero',
-        'Febrero',
-        'Marzo',
-        'Abril',
-        'Mayo',
-        'Junio',
-        'Julio',
-        'Agosto',
-        'Septiembre',
-        'Octubre',
-        'Noviembre',
-        'Diciembre'
-      ],
-      showTodayButton: false,
-      weeksList: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-      dateFormat: 'DD.MM.YYYY',
-      clearButton: true
+    // Delete a channel (Android O and above)
+    this.push
+      .deleteChannel("testchannel1")
+      .then(() => console.log("Channel deleted"));
+
+    // Return a list of currently configured channels
+    this.push
+      .listChannels()
+      .then(channels => console.log("List of channels", channels));
+
+    // to initialize push notifications
+
+    const options: PushOptions = {
+      android: {},
+      ios: {
+        alert: "true",
+        badge: true,
+        sound: "false"
+      },
+      windows: {},
+      browser: {
+        pushServiceURL: "http://push.api.phonegap.com/v1/push"
+      }
     };
 
-    const datePickerModal = await this.modalCtrl.create({
-      component: Ionic4DatepickerModalComponent,
-      cssClass: 'li-ionic4-datePicker',
-      componentProps: { objConfig: datePickerObj }
-    });
-    await datePickerModal.present();
+    const pushObject: PushObject = this.push.init(options);
+    pushObject
+      .on("notification")
+      .subscribe((notification: any) =>
+        console.log("Received a notification", notification)
+      );
+    pushObject
+      .on("registration")
+      .subscribe((registration: any) =>
+        console.log("Device registered", registration)
+      );
+    pushObject
+      .on("error")
+      .subscribe(error => console.error("Error with Push plugin", error));
+  }
 
-    datePickerModal.onDidDismiss().then(data => {
-      // this.isModalOpen = false;
-      console.log(data);
-      this.selectedDate = data.data.date;
-    });
+  onpickupClick() {
+    this.router.navigate(["map"]);
   }
 }

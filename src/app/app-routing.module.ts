@@ -8,6 +8,10 @@ const routes: Routes = [
     path: 'test-function',
     loadChildren: () => import('./../pages/test-function/test-function.module').then( m => m.TestFunctionPageModule)
   },
+  {
+    path: 'map',
+    loadChildren: () => import('./../pages/map/map.module').then( m => m.MapPageModule)
+  },
   
 ];
 
