@@ -9,7 +9,6 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
-import { Push, PushObject, PushOptions } from '@ionic-native/push/ngx';
 import {NativeGeocoder,NativeGeocoderOptions} from "@ionic-native/native-geocoder/ngx";
 
 @NgModule({
@@ -22,7 +21,6 @@ import {NativeGeocoder,NativeGeocoderOptions} from "@ionic-native/native-geocode
     StatusBar,
     SplashScreen,
     LocalNotifications,
-    Push,
     NativeGeocoder,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

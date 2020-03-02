@@ -31,13 +31,19 @@ export class MapPage implements OnInit {
       attribution:
         'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
     }).addTo(this.map);
-    this.locatePosition();
+    
+    // this.map.on("move", () => {
+    //   console.log("Current Map Center:", this.map.getCenter().toString());
+    //   this.newMarker = marker(this.map.getCenter(), {
+    //     draggable: true
+    //   }).addTo(this.map);
+    // });
   }
 
   locatePosition() {
     this.map.locate({ setView: true }).on("locationfound", (e: any) => {
       this.newMarker = marker([e.latitude, e.longitude], {
-        draggable: false
+        draggable: true
       }).addTo(this.map);
 
       this.newMarker.bindPopup("ESTAS AQUI").openPopup();
@@ -49,22 +55,8 @@ export class MapPage implements OnInit {
       });
     });
 
-    this.map.on("move", () => {
-      console.log("Current Map Center:", this.map.getCenter().toString());
-      this.newMarker = marker(this.map.getCenter());
-    });
-
-    //Dragend event of map for update marker position
-    // this.map.on("dragend", function(e) {
-    //   this.newMarker = marker(this.map.getCenter());
-    //   var position = this.newMarker.getLatLng();
-    //   let lat = Number(position["lat"]).toFixed(5);
-    //   let lng = Number(position["lng"]).toFixed(5);
-    //   //console.log(position);
-    //   this.newMarker.setLeafLatLong(lat, lng);
-    // });
+    
   }
-
 
   //The function below is added
   getAddress(lat: number, long: number) {
@@ -83,7 +75,8 @@ export class MapPage implements OnInit {
     //     pickupLocation: this.address
     //   }
     // };
-    console.log(this.address, "adress");
+    console.log(this.address, 'adress');
+    
 
     //this.router.navigate(["home"], { state: this.address });
     //this.router.navigate(["home"], navigationextras);
